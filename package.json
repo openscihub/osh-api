@@ -1,0 +1,21 @@
+{
+  "name": "osh-api",
+  "version": "0.0.0",
+  "description": "openscihub.org: API definitions and language interfaces",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -C"
+  },
+  "author": "Carl A. Bauer",
+  "license": "MIT",
+  "dependencies": {
+    "osh-model": "0.0.2",
+    "osh-route": "0.0.5",
+    "superagent": "^0.21.0",
+    "urlify": "^0.3.5",
+    "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1"
+  }
+}

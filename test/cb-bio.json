@@ -1,0 +1,49 @@
+{
+  "message-version": "1.1",
+  "orcid-profile": {
+    "orcid": null,
+    "orcid-identifier": {
+      "value": null,
+      "uri": "http://orcid.org/0000-0001-8288-8290",
+      "path": "0000-0001-8288-8290",
+      "host": "orcid.org"
+    },
+    "orcid-preferences": {
+      "locale": "EN"
+    },
+    "orcid-history": {
+      "creation-method": "WEBSITE",
+      "submission-date": {
+        "value": 1417455063519
+      },
+      "last-modified-date": {
+        "value": 1417457333528
+      },
+      "claimed": {
+        "value": true
+      },
+      "source": null,
+      "visibility": null
+    },
+    "orcid-bio": {
+      "personal-details": {
+        "given-names": {
+          "value": "Carl"
+        },
+        "family-name": {
+          "value": "Bauer"
+        }
+      },
+      "keywords": null,
+      "delegation": null,
+      "applications": null,
+      "scope": null
+    },
+    "orcid-activities": {
+      "affiliations": null
+    },
+    "type": "USER",
+    "group-type": null,
+    "client-type": null
+  }
+}
