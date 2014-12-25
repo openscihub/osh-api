@@ -1,26 +1,12 @@
 var ResponseSet = require('../lib/response-set');
-
+var Realname = exports;
 
 var responses = new ResponseSet();
-var Realname = {};
-
-
-/**
- *  Validate realname.
- */
-
-var RealnameString = responses.add({
-  message: 'Realname must be a string.'
-});
-var RealnameTooLong = responses.add({
-  message: 'Realname must be fewer than 1024 characters.'
-});
-
-Realname.validate = function(realname) {
-  if ('string' != typeof realname) return RealnameString();
-  if (realname.length > 1024) return RealnameTooLong();
-};
-
+responses.add('realname_type_error', 'Realname must be a string.');
+responses.add('realname_too_long', 'Realname must be fewer than 1024 characters.');
 Realname.responses = responses;
 
-module.exports = Realname;
+Realname.validate = function(realname) {
+  if ('string' != typeof realname) return responses.use('realname_type_error');
+  if (realname.length > 1024) return responses.use('realname_too_long');
+};

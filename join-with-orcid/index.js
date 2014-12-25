@@ -6,7 +6,7 @@ var Action = require('../lib/simple-action');
 var merge = require('xtend/immutable');
 var extend = require('xtend/mutable');
 var Orcid = require('../lib/orcid');
-
+var Route = require('osh-route');
 
 /**
  *  Properties:
@@ -125,12 +125,12 @@ joinWithOrcid.realnameFromOrcidBio = function(bio, opts) {
 /**
  */
 
-joinWithOrcid.validate = function(props, callback) {
+joinWithOrcid.validate = function(payload) {
   return (
-    (!props.invitation && responses.use('no_invitation')) ||
-    (!props.orcid_auth_code && responses.use('no_auth_code')) ||
-    Username.validate(props.username) ||
-    Realname.validate(props.realname)
+    (!payload.invitation && responses.use('no_invitation')) ||
+    (!payload.orcid_auth_code && responses.use('no_auth_code')) ||
+    Username.validate(payload.username) ||
+    Realname.validate(payload.realname)
   );
 };
 

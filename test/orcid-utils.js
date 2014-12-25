@@ -1,4 +1,6 @@
 var orcidUtils = exports;
+var async = require('async');
+var request = require('superagent');
 
 /**
  *  This test expects the following environment variables:
@@ -28,14 +30,12 @@ orcidUtils.SESSION_RE = /JSESSIONID=([^;]+);/;
 orcidUtils.getAuthCode = function(opts, callback) {
   var authCode;
   var sessionCookie;
-  var accessToken;
 
   async.series(
     [
       signInToOrcid,
       requestOrcidAuthorization,
-      authorizeOrcid,
-      getOshAccessToken
+      authorizeOrcid
     ],
     function(err) {
       callback(err, authCode);
@@ -47,7 +47,7 @@ orcidUtils.getAuthCode = function(opts, callback) {
    */
 
   function signInToOrcid(done) {
-    request.post(SIGNIN_URI)
+    request.post(orcidUtils.SIGNIN_URI)
     .type('form')
     .send({
       userId: orcidUtils.EMAIL,
@@ -81,11 +81,11 @@ orcidUtils.getAuthCode = function(opts, callback) {
     .query({
       client_id: orcidUtils.OSH_CLIENT_ID,
       response_type: 'code',
-      scope: SCOPE,
+      scope: orcidUtils.SCOPE,
       redirect_uri: orcidUtils.REDIRECT_URI
     })
     .end(function(err, res) {
-      //console.log(res.status);
+      console.log(res.status);
       //if (res) {
       //  console.log(res.header);
       //  console.log(res.body);
@@ -105,7 +105,7 @@ orcidUtils.getAuthCode = function(opts, callback) {
     //.set('Content-Type', 'application/json;charset=UTF-8')
     .send(payload)
     .end(function(err, res) {
-      //console.log(res.status);
+      console.log(res.status);
       //if (res) {
       //  console.log(res.header);
       //  console.log(res.body);
