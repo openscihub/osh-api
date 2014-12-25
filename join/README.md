@@ -1,17 +1,15 @@
-# `POST /join`
+## `POST /join`
 
-This endpoint creates a new openscihub user. It expects to receive a
-json object in the request body with the following attributes:
+This endpoint creates a new openscihub user using traditional username/password
+credentials. It expects to receive a json object in the request body with the
+following attributes:
 
 - `username`: A "url-safe" username (comprising the characters: `a-z`, `A-Z`, `0-9`,
   `-`, and/or `_`). This is the unique id of a user. It must
   be a url-safe string because the openscihub webapp puts it in the user's
   homepage url. If the given username is not url-safe, it will be converted
   on the server using [urlify](https://github.com/Gottox/node-urlify).
-- `orcid` *string*: The ORCID iD of the user. Example: `"0000-0001-2345-238X"`.
-- `login_with_orcid` *boolean*: Use the ORCID iD for openscihub logins. If
-  `true`, the `password` field will be ignored.
-- `password`: User password. Required only if `login_with_orcid` is `false`.
+- `password`: User password.
 - `realname` *string*: The user's real name; the one that should show on their
   publications. This is optional; if left
 - `invite`: Invitation token. Required.
@@ -98,3 +96,18 @@ Response body on server error:
   "result": {}
 }
 ```
+
+
+## Javascript
+
+### Join.validate(payload, callback)
+
+- `payload`
+  - required
+  - `payload.username`
+    - required
+    - string
+  - `payload.realname`
+
+Returns API response to callback. On success, the response is the same as a
+successful call to [GetInvitation](../get-invitation).

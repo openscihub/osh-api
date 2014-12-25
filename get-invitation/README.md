@@ -12,6 +12,7 @@ expiration date.
   "code": 0,
   "message": "Success.",
   "result": {
+    "token": "afdcaefaceacdafecdaeac",
     "creator": "bongoplayer42",
     "expires": 29834681912
   }

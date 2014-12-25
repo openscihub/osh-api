@@ -1,0 +1,41 @@
+{
+    "errors": [],
+    "userName": {
+        "errors": [],
+        "value": "",
+        "required": true,
+        "getRequiredMessage": null
+    },
+    "password": {
+        "errors": [],
+        "value": "",
+        "required": true,
+        "getRequiredMessage": null
+    },
+    "clientId": {
+        "errors": [],
+        "value": "",
+        "required": true,
+        "getRequiredMessage": null
+    },
+    "redirectUri": {
+        "errors": [],
+        "value": "",
+        "required": true,
+        "getRequiredMessage": null
+    },
+    "scope": {
+        "errors": [],
+        "value": "/authenticate",
+        "required": true,
+        "getRequiredMessage": null
+    },
+    "responseType": {
+        "errors": [],
+        "value": "code",
+        "required": true,
+        "getRequiredMessage": null
+    },
+    "approved": true,
+    "persistentTokenEnabled": false
+}
