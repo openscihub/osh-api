@@ -1,8 +1,13 @@
+var ResponseSet = require('../lib/response-set');
 var Scope = require('../scope');
 
 var OAuth2 = {
 
+  USER_CLIENT_PREFIX: 'user:',
   USER_CLIENT_PREFIX_RE: /^user:/,
+
+  APP_CLIENT_PREFIX: 'app:',
+  APP_CLIENT_PREFIX_RE: /^app:/,
 
   extendUriQuery: function(uri, query) {
     uri = url.parse(uri, true);
@@ -33,6 +38,11 @@ var OAuth2 = {
     return expires;
   }
 };
+
+/**
+ *  These responses come from
+ *  http://tools.ietf.org/html/rfc6749#section-5.2
+ */
 
 var responses = OAuth2.responses = new ResponseSet();
 

@@ -3,19 +3,28 @@ var Action = require('../lib/simple-action');
 var Route = require('osh-route');
 var merge = require('xtend/immutable');
 var OAuth2 = require('../oauth2');
+var Scope = require('../scope');
 
-/**
- *  These responses come from
- *  http://tools.ietf.org/html/rfc6749#section-5.2
- */
 
 var responses = getAccessToken.responses = OAuth2.responses;
+
+var InvalidRequest = responses.fn('invalid_request');
+var UnauthorizedClient = responses.fn('unauthorized_client');
 
 getAccessToken.method = 'POST';
 getAccessToken.route = new Route({path: '/oauth2/token'});
 
 
 function getAccessToken(opts, callback) {
+  Action(
+    merge(getAccessToken, {
+      payload: getAccessToken.Payload(opts)
+    }),
+    callback
+  );
+}
+
+getAccessToken.Payload = function(opts) {
   var payload = {
     grant_type: (
       (opts.code && 'authorization_code') ||
@@ -41,13 +50,8 @@ function getAccessToken(opts, callback) {
     payload.redirect_uri = opts.redirectUri;
   }
 
-  Action(
-    merge(getAccessToken, {
-      payload: payload
-    }),
-    callback
-  );
-}
+  return payload;
+};
 
 
 var GRANTS = {
@@ -89,11 +93,8 @@ var GRANTS = {
 };
 
 
-getAccessToken.validate = function(req) {
-  var res;
-  var body = req.body || {};
-  var grantType = body.grant_type;
-
+getAccessToken.validate = function(payload) {
+  var grantType = payload.grant_type;
   if (!grantType) {
     return InvalidRequest('Missing grant_type.');
   }
@@ -102,9 +103,9 @@ getAccessToken.validate = function(req) {
     return responses.use('unsupported_grant_type');
   }
   return (
-    (!body.client_id && InvalidRequest('Missing client id.')) ||
-    (!body.client_secret && InvalidRequest('Missing client secret.')) ||
-    grant.validate(req)
+    (!payload.client_id && InvalidRequest('Missing client id.')) ||
+    (!payload.client_secret && InvalidRequest('Missing client secret.')) ||
+    grant.validate(payload)
   );
 };
 
