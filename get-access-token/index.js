@@ -28,13 +28,13 @@ getAccessToken.Payload = function(opts) {
   var payload = {
     grant_type: (
       (opts.code && 'authorization_code') ||
-      (opts.secret && (opts.password ? 'password' : 'client_credentials')) ||
+      (opts.password && (opts.secret ? 'password' : 'client_credentials')) ||
       'refresh_token'
     ),
     client_id: (
       opts.client ||
-      (OAuth2.USER_CLIENT_PREFIX + opts.username) ||
-      (OAuth2.APP_CLIENT_PREFIX + opts.app)
+      (Client.User.PREFIX + opts.username) ||
+      (Client.App.PREFIX + opts.app)
     ),
     client_secret: opts.secret || opts.password,
     scope: opts.scope
@@ -59,7 +59,7 @@ var GRANTS = {
     validate: function(body) {
       return (
         (
-          (!OAuth2.USER_CLIENT_PREFIX_RE.test(body.client_id)) &&
+          (!Client.User.PREFIX_RE.test(body.client_id)) &&
           UnauthorizedClient('Client is not a user.')
         ) ||
         Scope.validate(body.scope)
@@ -71,10 +71,29 @@ var GRANTS = {
     validate: function(body) {
       return (
         (
-          (OAuth2.TRUSTED_CLIENTS.indexOf(body.client_id) < 0) &&
+          !Client.Internal.PREFIX_RE.test(body.client_id) &&
           UnauthorizedClient('Client is not trusted.')
         ) ||
         Scope.validate(body.scope)
+      );
+    }
+  },
+
+  authorization_code: {
+    validate: function(body) {
+      return (
+        (
+          !Client.App.PREFIX_RE.test(body.client_id) &&
+          UnauthorizedClient('Client is not an app.')
+        ) ||
+        (
+          ('string' !== typeof body.code) &&
+          InvalidRequest('Missing authorization code.')
+        ) ||
+        (
+          ('string' !== typeof body.redirect_uri) &&
+          InvalidRequest('Missing redirect URI.')
+        )
       );
     }
   },
