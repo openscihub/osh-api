@@ -1,36 +1,23 @@
 var ResponseSet = require('../lib/response-set');
-var AsyncCaller = require('../lib/async-caller');
-var request = require('superagent');
+var Action = require('../lib/simple-action');
+var merge = require('xtend/immutable');
 
-var responses = new ResponseSet();
 
-var InvalidTokenFormat = responses.add({
-  message: 'Invalid invitation token format.'
-});
-
-function GetInvitation(token, callback) {
-  var async = AsyncCaller(callback);
-  var uri = GetInvitation.route.uri({token: token});
-  if (!uri) return async(InvalidTokenFormat());
-
-  request.get(uri)
-  .end(function(err, res) {
-    callback(err ? responses.AjaxError() : res.body);
-  });
+function getInvitation(token, callback) {
+  Action(
+    merge(getInvitation, {
+      props: {id: token}
+    }),
+    callback
+  );
 }
 
-GetInvitation.access = 'public';
-GetInvitation.route = require('./route');
+var responses = getInvitation.responses = new ResponseSet();
+responses.add('invalid_invite_token', 'Invalid invitation token format.');
+responses.add('no_invitation', 'Invitation has expired or does not exist.');
 
+getInvitation.access = 'public';
+getInvitation.method = 'GET';
+getInvitation.route = require('./route');
 
-/**
- *  Expose for use on server.
- */
-
-GetInvitation.NoInvitation = responses.add({
-  message: 'Invitation has expired or does not exist.'
-});
-
-GetInvitation.responses = responses;
-
-module.exports = GetInvitation;
+module.exports = getInvitation;

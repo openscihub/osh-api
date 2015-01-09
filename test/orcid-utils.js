@@ -1,6 +1,7 @@
 var orcidUtils = exports;
 var async = require('async');
 var request = require('superagent');
+var fs = require('fs');
 
 /**
  *  This test expects the following environment variables:
@@ -55,6 +56,13 @@ orcidUtils.getAuthCode = function(opts, callback) {
     })
     .end(function(err, res) {
       if (!err) {
+        if (opts.dumps) {
+          fs.writeFileSync(opts.dumps.signIn, JSON.stringify({
+            status: res.status,
+            header: res.header,
+            body: res.body
+          }, null, 2));
+        }
         //console.log(res.header);
         //console.log(res.body);
         var cookies = res.header['set-cookie'] || [];
@@ -81,15 +89,18 @@ orcidUtils.getAuthCode = function(opts, callback) {
     .query({
       client_id: orcidUtils.OSH_CLIENT_ID,
       response_type: 'code',
-      scope: orcidUtils.SCOPE,
+      scope: opts.scope || orcidUtils.SCOPE,
       redirect_uri: orcidUtils.REDIRECT_URI
     })
     .end(function(err, res) {
       console.log(res.status);
-      //if (res) {
-      //  console.log(res.header);
-      //  console.log(res.body);
-      //}
+      if (res && opts.dumps) {
+        fs.writeFileSync(opts.dumps.getAuth, JSON.stringify({
+          status: res.status,
+          header: res.header,
+          body: res.body
+        }, null, 2));
+      }
       if (!res.ok) err = new Error('ORCiD auth GET');
       done(err);
     });
@@ -106,10 +117,15 @@ orcidUtils.getAuthCode = function(opts, callback) {
     .send(payload)
     .end(function(err, res) {
       console.log(res.status);
-      //if (res) {
-      //  console.log(res.header);
-      //  console.log(res.body);
-      //}
+      if (res && opts.dumps) {
+        fs.writeFileSync(opts.dumps.postAuth, JSON.stringify({
+          status: res.status,
+          header: res.header,
+          body: res.body
+        }, null, 2));
+        //console.log(res.header);
+        //console.log(res.body);
+      }
       if (!err && res.ok) {
         var match = /code=([a-zA-Z0-9]+)/.exec(res.body.redirectUri.value);
         if (!match) err = new Error('No code in redirect_uri');

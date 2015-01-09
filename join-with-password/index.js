@@ -3,13 +3,21 @@ var request = require('superagent');
 var tick = process.nextTick;
 var Username = require('./username');
 var Realname = require('./realname');
-var AsyncCaller = require('../lib/async-caller');
 var Route = require('osh-route');
 var SimpleAction = require('../lib/simple-action');
+var merge = require('xtend/immutable');
 
 
-var join = SimpleAction();
-join.method = 'POST';
+var joinWithPassword = function(props, callback) {
+  SimpleAction(
+    merge(joinWithPassword, {
+      payload: props
+    }),
+    callback
+  );
+};
+
+joinWithPassword.method = 'POST';
 
 var PASSWORD_LENGTH = 6;
 
@@ -22,28 +30,28 @@ responses.add(
   'Password must be at least ' + PASSWORD_LENGTH + ' characters.'
 );
 responses.add('password_required', 'Password must be a string.');
-join.responses = responses;
+joinWithPassword.responses = responses;
 
 
-join.route = new Route({path: '/user'});
-join.Username = Username;
-join.Realname = Realname;
+joinWithPassword.route = new Route({path: '/user'});
+joinWithPassword.Username = Username;
+joinWithPassword.Realname = Realname;
 
 
-join.validatePassword = function(password) {
+joinWithPassword.validatePassword = function(password) {
   if ('string' != typeof password) return responses.use('password_required');
   if (password.length < PASSWORD_LENGTH) return responses.use('short_password');
 };
 
 
-join.validate = function(props) {
+joinWithPassword.validate = function(props) {
   return (
     (!props.invitation && responses.use('missing_invitation')) ||
     Username.validate(props.username) ||
     Realname.validate(props.realname) ||
-    join.validatePassword(props.password)
+    joinWithPassword.validatePassword(props.password)
   );
 };
 
 
-module.exports = join;
+module.exports = joinWithPassword;

@@ -91,6 +91,26 @@ function(err, result) {
 }
 ```
 
+## Testing
+
+The openscihub javascript API comes with a testing suite for a running
+API server. It requires the server host and that the server
+has been seeded with a single user with username `test` and password `test`.
+It is run with the command:
+
+```
+node test/test.js --host="localhost:8080"
+```
+
+or from within a script:
+
+```js
+var oshApi = require('osh-api');
+
+oshApi.test({host: 'localhost:8080'}, function(err) {
+  // ...
+});
+```
 
 ## Javascript interfaces
 
