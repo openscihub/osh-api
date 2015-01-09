@@ -1,9 +1,11 @@
 var ResponseSet = require('../lib/response-set');
 var Action = require('../lib/simple-action');
+var Route = require('osh-route');
 var merge = require('xtend/immutable');
-var OAuth2 = require('../lib/oauth2');
+var OAuth2 = require('../oauth2');
 
-var responses = new ResponseSet();
+var responses = createInvitation.responses = new ResponseSet();
+
 responses.extend(OAuth2.responses);
 responses.add('invalid_invite_token', 'Invalid invitation token format.');
 responses.add('no_invitation', 'Invitation has expired or does not exist.');
