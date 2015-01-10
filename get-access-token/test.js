@@ -13,8 +13,9 @@ describe('getAccessToken', function() {
     it('should invoke client_credentials request', function(done) {
       getAccessToken(
         {
-          username: 'test',
-          secret: 'test',
+          grant_type: 'client_credentials',
+          client_id: 'user:test',
+          client_secret: 'test',
           scope: 'account'
         },
         function(err, accessToken) {
@@ -25,21 +26,53 @@ describe('getAccessToken', function() {
     });
   }
 
-  describe('Payload()', function() {
-    it('should create valid payload from opts', function() {
-      var payload = getAccessToken.Payload({
-        username: 'test',
-        secret: 'test',
-        scope: 'account'
-      });
-      expect(payload).to.eql({
-        grant_type: 'client_credentials',
-        scope: 'account',
-        client_id: 'user:test',
-        client_secret: 'test'
-      });
-    });
-  });
+  //describe('Payload()', function() {
+  //  it('should create valid client_credentials payload from opts', function() {
+  //    var payload = getAccessToken.Payload({
+  //      username: 'test',
+  //      password: 'test',
+  //      scope: 'account'
+  //    });
+  //    expect(payload).to.eql({
+  //      grant_type: 'client_credentials',
+  //      scope: 'account',
+  //      client_id: 'user:test',
+  //      client_secret: 'test'
+  //    });
+  //  });
+
+  //  it('should create valid password payload from opts', function() {
+  //    var payload = getAccessToken.Payload({
+  //      app: 'osh',
+  //      secret: 'ossshhh',
+  //      username: 'test',
+  //      password: 'test',
+  //      scope: 'account'
+  //    });
+  //    expect(payload).to.eql({
+  //      grant_type: 'password',
+  //      scope: 'account',
+  //      client_id: 'internal:osh',
+  //      client_secret: 'ossshhh',
+  //      username: 'test',
+  //      password: 'test'
+  //    });
+  //  });
+
+  //  it('should create valid refresh_token payload from opts', function() {
+  //    var payload = getAccessToken.Payload({
+  //      client: 'internal:osh',
+  //      secret: 'ossshhh',
+  //      refreshToken: 'deerfeed'
+  //    });
+  //    expect(payload).to.eql({
+  //      grant_type: 'refresh_token',
+  //      refresh_token: 'deerfeed',
+  //      client_id: 'internal:osh',
+  //      client_secret: 'ossshhh'
+  //    });
+  //  });
+  //});
 
   describe('validate()', function() {
     it('should pass', function() {

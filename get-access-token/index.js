@@ -4,6 +4,7 @@ var Route = require('osh-route');
 var merge = require('xtend/immutable');
 var OAuth2 = require('../oauth2');
 var Scope = require('../scope');
+var Client = require('../client');
 
 
 var responses = getAccessToken.responses = OAuth2.responses;
@@ -18,40 +19,50 @@ getAccessToken.route = new Route({path: '/oauth2/token'});
 function getAccessToken(opts, callback) {
   Action(
     merge(getAccessToken, {
-      payload: getAccessToken.Payload(opts)
+      //payload: getAccessToken.Payload(opts)
+      payload: opts
     }),
     callback
   );
 }
 
-getAccessToken.Payload = function(opts) {
-  var payload = {
-    grant_type: (
-      (opts.code && 'authorization_code') ||
-      (opts.password && (opts.secret ? 'password' : 'client_credentials')) ||
-      'refresh_token'
-    ),
-    client_id: (
-      opts.client ||
-      (Client.User.PREFIX + opts.username) ||
-      (Client.App.PREFIX + opts.app)
-    ),
-    client_secret: opts.secret || opts.password,
-    scope: opts.scope
-  };
+// Silly idea? Stick to OAuth2 standard; everybody knows it.
 
-  if (opts.secret && opts.password) {
-    payload.username = opts.username;
-    payload.password = opts.password;
-  }
-
-  if (opts.code) {
-    payload.code = opts.code;
-    payload.redirect_uri = opts.redirectUri;
-  }
-
-  return payload;
-};
+//getAccessToken.Payload = function(opts) {
+//  var payload = {
+//    grant_type: (
+//      opts.grant_type ||
+//      (opts.code && 'authorization_code') ||
+//      (opts.password && (opts.secret ? 'password' : 'client_credentials')) ||
+//      'refresh_token'
+//    ),
+//    scope: opts.scope,
+//    client_id: opts.client_id,
+//    client_secret: opts.client_secret || opts.secret || opts.password
+//  };
+//
+//  if (opts.secret && opts.password) {
+//    payload.client_id = Client.Internal.PREFIX + opts.app;
+//    payload.username = opts.username;
+//    payload.password = opts.password;
+//  }
+//  else if (opts.password) {
+//    payload.client_id = Client.User.PREFIX + opts.username;
+//  }
+//  else if (opts.app) {
+//    payload.client_id = Client.App.PREFIX + opts.app;
+//  }
+//
+//  if (opts.code) {
+//    payload.code = opts.code;
+//    payload.redirect_uri = opts.redirectUri;
+//  }
+//  else if (opts.refreshToken) {
+//    payload.refresh_token = opts.refreshToken;
+//  }
+//
+//  return payload;
+//};
 
 
 var GRANTS = {
