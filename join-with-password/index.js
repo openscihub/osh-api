@@ -28,7 +28,7 @@ responses.add(
   'Password must be at least ' + PASSWORD_LENGTH + ' characters.'
 );
 responses.add('password_required', 'Password must be a string.');
-joinWithPassword.responses = responses;
+responses.add('user_exists', 'User already exists.');
 
 
 joinWithPassword.route = new Route({path: '/user'});
@@ -42,12 +42,12 @@ joinWithPassword.validatePassword = function(password) {
 };
 
 
-joinWithPassword.validate = function(props) {
+joinWithPassword.validate = function(payload) {
   return (
-    (!props.invitation && responses.use('missing_invitation')) ||
-    Username.validate(props.username) ||
-    Realname.validate(props.realname) ||
-    joinWithPassword.validatePassword(props.password)
+    (!payload.invitation && responses.use('missing_invitation')) ||
+    Username.validate(payload.username) ||
+    Realname.validate(payload.realname) ||
+    joinWithPassword.validatePassword(payload.password)
   );
 };
 

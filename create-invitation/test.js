@@ -41,7 +41,6 @@ describe('create-invitation', function() {
             accessToken: accessToken
           },
           function(err, invitation) {
-            console.log(invitation);
             done(err);
           }
         );
