@@ -9,7 +9,10 @@ var expect = require('expect.js');
  *    - invitation linked to user
  */
 
-var host = createInvitation.host = process.env.OSH_HOST;
+var host = process.env.OSH_HOST;
+
+createInvitation.host = host;
+getAccessToken.host = host;
 
 describe('create-invitation', function() {
   if (host) {
@@ -17,9 +20,19 @@ describe('create-invitation', function() {
       var accessToken;
 
       before(function(done) {
-        getAccessToken({scope: 'account'}, function(err, tok) {
-          accessToken = tok;
-        });
+        getAccessToken(
+          {
+            grant_type: 'client_credentials',
+            client_id: 'user:test',
+            client_secret: 'test',
+            scope: 'account'
+          },
+          function(err, res) {
+            if (err) return done(err);
+            accessToken = res.access_token;
+            done();
+          }
+        );
       });
 
       it('should work', function(done) {

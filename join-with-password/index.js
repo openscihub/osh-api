@@ -1,6 +1,4 @@
 var ResponseSet = require('../lib/response-set');
-var request = require('superagent');
-var tick = process.nextTick;
 var Username = require('./username');
 var Realname = require('./realname');
 var Route = require('osh-route');
@@ -21,7 +19,7 @@ joinWithPassword.method = 'POST';
 
 var PASSWORD_LENGTH = 6;
 
-var responses = new ResponseSet();
+var responses = joinWithPassword.responses = new ResponseSet();
 responses.extend(Username.responses);
 responses.extend(Realname.responses);
 responses.add('missing_invitation', 'Missing an invitation.');

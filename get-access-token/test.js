@@ -10,19 +10,113 @@ var host = getAccessToken.host = process.env.OSH_HOST;
 
 describe('getAccessToken', function() {
   if (host) {
-    it('should invoke client_credentials request', function(done) {
-      getAccessToken(
-        {
-          grant_type: 'client_credentials',
-          client_id: 'user:test',
-          client_secret: 'test',
-          scope: 'account'
-        },
-        function(err, accessToken) {
-          console.log(accessToken);
-          done(err);
-        }
-      );
+    describe('client_credentials', function() {
+      it('should return access token', function(done) {
+        getAccessToken(
+          {
+            grant_type: 'client_credentials',
+            client_id: 'user:test',
+            client_secret: 'test',
+            scope: 'account'
+          },
+          function(err, res) {
+            expect(res.access_token).to.match(/[0-9a-z]+/);
+            done(err);
+          }
+        );
+      });
+
+      it('should fail with bad secret', function(done) {
+        getAccessToken(
+          {
+            grant_type: 'client_credentials',
+            client_id: 'user:test',
+            client_secret: 'best',
+            scope: 'account'
+          },
+          function(err, res) {
+            expect(err && err.message).to.match(/invalid_grant/);
+            expect(err.message).to.match(/authentication failed/);
+            done();
+          }
+        );
+      });
+
+      it('should fail with unknown client', function(done) {
+        getAccessToken(
+          {
+            grant_type: 'client_credentials',
+            client_id: 'user:best',
+            client_secret: 'test',
+            scope: 'account'
+          },
+          function(err, res) {
+            expect(err && err.message).to.match(/invalid_client/);
+            expect(err.message).to.match(/unknown client/i);
+            done();
+          }
+        );
+      });
+    });
+
+    /**
+     *  This test set relies on a trusted client application.
+     */
+
+    describe('password', function() {
+      it('should return access token', function(done) {
+        getAccessToken(
+          {
+            grant_type: 'password',
+            client_id: 'internal:test',
+            client_secret: 'test',
+            username: 'test',
+            password: 'test',
+            scope: 'account'
+          },
+          function(err, res) {
+            if (err) return done(err);
+            expect(res.access_token).to.match(/[0-9a-z]+/);
+            done();
+          }
+        );
+      });
+
+      it('should fail with untrusted client type', function(done) {
+        getAccessToken(
+          {
+            grant_type: 'password',
+            client_id: 'user:test', // Client exists, but is not trusted.
+            client_secret: 'test',  // Correct secret.
+            username: 'test',
+            password: 'test',
+            scope: 'account'
+          },
+          function(err, res) {
+            expect(err && err.message).to.match(/unauthorized_client/);
+            expect(err.message).to.match(/not trusted/i);
+            done();
+          }
+        );
+      });
+
+      it('should fail with unknown client', function(done) {
+        getAccessToken(
+          {
+            grant_type: 'password',
+            client_id: 'internal:best',
+            client_secret: 'test',
+            username: 'test',
+            password: 'test',
+            scope: 'account'
+          },
+          function(err, res) {
+            expect(err && err.message).to.match(/invalid_client/);
+            expect(err.message).to.match(/unknown client/i);
+            done();
+          }
+        );
+      });
     });
   }
 

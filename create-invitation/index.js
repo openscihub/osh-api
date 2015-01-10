@@ -3,6 +3,7 @@ var Action = require('../lib/simple-action');
 var Route = require('osh-route');
 var merge = require('xtend/immutable');
 var OAuth2 = require('../oauth2');
+var pick = require('../lib/pick');
 
 var responses = createInvitation.responses = new ResponseSet();
 
@@ -15,13 +16,14 @@ createInvitation.responses = responses;
 function createInvitation(props, callback) {
   Action(
     merge(createInvitation, {
-      payload: props
+      payload: pick(props, ['lifetime']),
+      accessToken: props.accessToken
     }),
     callback
   );
 }
 
-createInvitation.access = 'account';
+createInvitation.scope = 'account';
 createInvitation.method = 'POST';
 createInvitation.route = new Route({path: '/invitation'});
 createInvitation.lifetime = 7; // a week
