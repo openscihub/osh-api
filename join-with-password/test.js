@@ -1,3 +1,4 @@
+var expect = require('expect.js');
 var api = require('../test/api')({
   getAccessToken: 'get-access-token',
   createInvitation: 'create-invitation',
@@ -22,9 +23,6 @@ describe('join-with-password', function() {
           if (err) return done(err);
           accessToken = _accessToken;
           done();
-
-          // Wait for token to take?
-          //setTimeout(done, 500);
         }
       );
     });
@@ -50,7 +48,25 @@ describe('join-with-password', function() {
           invitation: invitation.id
         },
         function(err, user) {
-          done(err);
+          if (err) return done(err);
+          expect(user.username).to.be('professor');
+          done();
+        }
+      );
+    });
+
+    it('should fail with old invitation', function(done) {
+      api.joinWithPassword(
+        {
+          username: 'professor2',
+          password: 'good-news-everyone!',
+          realname: 'Hubert J. Farnsworth',
+          invitation: invitation.id
+        },
+        function(err, user) {
+          expect(err).to.be.ok();
+          expect(err.message).to.match(/expired/);
+          done();
         }
       );
     });

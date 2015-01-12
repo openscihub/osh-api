@@ -1,7 +1,17 @@
 ## `POST /join`
 
 This endpoint creates a new openscihub user using traditional username/password
-credentials. It expects to receive a json object in the request body with the
+credentials.
+
+User accounts may be deleted only if there are no persistent effects associated
+with the user; otherwise accounts are merely deactivated.  A user "persists"
+their account when they, for example,
+
+- submit an article,
+- comment on an article, or
+- invite other users (that themselves persist their accounts).
+
+It expects to receive a json object in the request body with the
 following attributes:
 
 - `username`: A "url-safe" username (comprising the characters: `a-z`, `A-Z`, `0-9`,

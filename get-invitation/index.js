@@ -14,7 +14,7 @@ function getInvitation(token, callback) {
 
 var responses = getInvitation.responses = new ResponseSet();
 responses.add('invalid_invite_token', 'Invalid invitation token format.');
-responses.add('no_invitation', 'Invitation has expired or does not exist.');
+responses.add('bad_invitation', 'Invitation has expired or does not exist.');
 
 getInvitation.access = 'public';
 getInvitation.method = 'GET';
