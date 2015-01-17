@@ -1,9 +1,9 @@
 var Route = require('osh-route');
-var Username = require('../join/username');
+var User = require('../user');
 
 module.exports = new Route({
   path: '/users/<username>',
   params: {
-    username: Username.regexp
+    username: User.Username.RE
   }
 });

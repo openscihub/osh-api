@@ -1,30 +1,21 @@
-var Username = require('../join/username');
+var User = require('../user');
 var ResponseSet = require('../lib/response-set');
 var extend = require('xtend/mutable');
-var request = require('superagent');
+var Action = require('../lib/simple-action');
 
-var responses = new ResponseSet();
 
-responses.extend(Username.responses);
-
-function GetUser(props, callback) {
-  var uri = GetUser.route.uri({username: props.username});
-  request.get(uri)
-  .end(function(err, res) {
-
-  });
+function getUser(props, callback) {
+  Action(
+    extend({props: props}, getUser),
+    callback
+  );
 }
 
-extend(GetUser, {
-  access: 'public',
-  validateUsername: Username.validate,
-  responses: responses,
-  route: new Route({
-    path: '/users/<username>',
-    params: {
-      username: Username.validate
-    }
-  })
-});
+var responses = new ResponseSet();
+responses.extend(User.Username.responses);
+responses.add('no_user', 'User does not exist.');
 
-module.exports = GetUser;
+getUser.route = require('./route');
+getUser.responses = responses;
+
+module.exports = getUser;
