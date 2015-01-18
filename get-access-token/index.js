@@ -7,10 +7,18 @@ var Scope = require('../scope');
 var Client = require('../client');
 
 
-var responses = getAccessToken.responses = OAuth2.responses;
+var responses = getAccessToken.responses = new ResponseSet();
+responses.extend(OAuth2.responses); // invalid_request
+responses.extend(Scope.responses);  // invalid_scope, insufficient_scope
+var InvalidRequest = responses.fn('invalid_request'); // Get fn hook to response.
+responses.add('invalid_client');
+responses.add('invalid_grant');
+var UnauthorizedClient = responses.add('unauthorized_client');
+responses.add(
+  'unsupported_grant_type',
+  'Supported grant types are "client_credentials", "password", "refresh_token", and "authorization_code"'
+);
 
-var InvalidRequest = responses.fn('invalid_request');
-var UnauthorizedClient = responses.fn('unauthorized_client');
 
 getAccessToken.method = 'POST';
 getAccessToken.route = new Route({path: '/oauth2/token'});

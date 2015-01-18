@@ -3,7 +3,6 @@ var Scope = exports;
 
 
 var responses = Scope.responses = new ResponseSet();
-responses.add('insufficient_scope');
 var InvalidScope = responses.add('invalid_scope');
 
 
