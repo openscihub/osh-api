@@ -2,16 +2,15 @@ var ResponseSet = require('../lib/response-set');
 var Action = require('../lib/simple-action');
 var Route = require('osh-route');
 var merge = require('xtend/immutable');
-var OAuth2 = require('../oauth2');
+var Resource = require('../resource');
 var pick = require('../lib/pick');
 
 var responses = createInvitation.responses = new ResponseSet();
 
-responses.extend(OAuth2.responses);
+responses.extend(Resource.responses);
 responses.add('invalid_invite_token', 'Invalid invitation token format.');
 responses.add('no_invitation', 'Invitation has expired or does not exist.');
 responses.add('invalid_lifetime', 'Lifetime should be 1 to 100. Units are days.');
-createInvitation.responses = responses;
 
 function createInvitation(props, callback) {
   Action(
